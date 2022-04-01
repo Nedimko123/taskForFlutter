@@ -32,8 +32,9 @@ class _NoteEditorState extends State<NoteEditor> {
   String selectedDate = Jiffy().format("yyyy-MM-dd HH:mm");
 
   String selectedCategory = '';
-
+  bool changeInitSelectedCategory = true;
   List<int> importance = [1, 2, 3];
+  bool changeInitImportance = true;
   int selectedImportance = 1;
   final TextEditingController _textEditingController = TextEditingController();
   @override
@@ -95,8 +96,9 @@ class _NoteEditorState extends State<NoteEditor> {
           return thisNote.when(
               data: ((data) {
                 _textEditingController.text = data.first['name'];
-
-                int initialImportance = data.first['importance'];
+                String initialCategory = data.first['category'];
+                int? initialImportance = data.first['importance'];
+                selectedDate = data.first['dates'];
                 return Column(
                   children: [
                     TextField(
@@ -106,7 +108,9 @@ class _NoteEditorState extends State<NoteEditor> {
                     //Big problems here
                     Text('Select category'),
                     DropdownButton(
-                      value: selectedCategoryExport,
+                      value: changeInitSelectedCategory
+                          ? initialCategory
+                          : selectedCategoryExport,
                       items: categoryList
                           .map((item) => DropdownMenuItem(
                               value: item,
@@ -118,13 +122,16 @@ class _NoteEditorState extends State<NoteEditor> {
                       onChanged: (item) => setState(() {
                         selectedCategoryExport = item.toString();
                         selectedCategory = selectedCategoryExport;
+                        changeInitSelectedCategory = false;
                         print(selectedCategory);
                       }),
                     ),
 
                     Text('Select importance'),
                     DropdownButton(
-                      value: selectedImportance,
+                      value: changeInitImportance
+                          ? initialImportance
+                          : selectedImportance,
                       items: importance
                           .map((item) => DropdownMenuItem<int>(
                               value: item,
@@ -133,11 +140,13 @@ class _NoteEditorState extends State<NoteEditor> {
                                 style: TextStyle(fontSize: 18),
                               )))
                           .toList(),
-                      onChanged: (item) => setState(() {
-                        selectedImportance = item as int;
-
-                        print(selectedImportance);
-                      }),
+                      onChanged: (item) {
+                        setState(() {
+                          selectedImportance = item as int;
+                          changeInitImportance = false;
+                          print(selectedImportance);
+                        });
+                      },
                     ),
                     Text('Select date and time'),
                     DateTimePicker(
