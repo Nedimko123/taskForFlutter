@@ -45,153 +45,134 @@ class _NoteEditorState extends State<NoteEditor> {
     });
 
     return Scaffold(
-        floatingActionButton: ElevatedButton(
-            onPressed: () async {
-              categoryColor =
-                  await colorFromCategory(category: selectedCategoryExport);
-              setState(() {
-                noteEditor(
-                    index: indexfornote,
-                    name: _textEditingController.text.toString(),
-                    importance: selectedImportance,
-                    category: selectedCategoryExport,
-                    date: selectedDate,
-                    color: categoryColor);
-              });
-              Navigator.of(context).pop();
-            },
-            child: Text('Save')),
-        appBar: AppBar(
-          title: Consumer(
-            builder: ((context, ref, child) {
-              AsyncValue<List> whatever = ref.watch(noteThatNeedsToBeEdited);
+      floatingActionButton: ElevatedButton(
+          onPressed: () async {
+            categoryColor =
+                await colorFromCategory(category: selectedCategoryExport);
+            setState(() {
+              noteEditor(
+                  index: indexfornote,
+                  name: _textEditingController.text.toString(),
+                  importance: selectedImportance,
+                  category: selectedCategoryExport,
+                  date: selectedDate,
+                  color: categoryColor);
+            });
+            Navigator.of(context).pop();
+          },
+          child: Text('Save')),
+      appBar: AppBar(
+        title: Consumer(
+          builder: ((context, ref, child) {
+            AsyncValue<List> whatever = ref.watch(noteThatNeedsToBeEdited);
 
-              return whatever.when(
-                  data: (name) {
-                    return Text('Editing: ' + name.first['name'].toString());
-                  },
-                  error: (e, stackTrace) => const Text('Error happened !!'),
-                  loading: () => const Text('Editing a note...'));
-            }),
-          ),
-          centerTitle: true,
-          actions: [
-            IconButton(
-                onPressed: () {
-                  noteDelete(index: indexfornote);
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: ((context) => const MyApp())))
-                    ..then(((value) {
-                      setState(() {});
-                    }));
-                  Navigator.of(context).pop();
+            return whatever.when(
+                data: (name) {
+                  return Text('Editing: ' + name.first['name'].toString());
                 },
-                icon: const Icon(Icons.delete))
-          ],
+                error: (e, stackTrace) => const Text('Error happened !!'),
+                loading: () => const Text('Editing a note...'));
+          }),
         ),
-        body: SingleChildScrollView(
-          child: FutureBuilder(
-              future: selectorbyId(index: indexfornote),
-              builder: (context, snapshot) {
-                return Center(
-                  child: Consumer(builder: ((context, ref, child) {
-                    AsyncValue<List> thisNote =
-                        ref.watch(noteThatNeedsToBeEdited);
-                    return thisNote.when(
-                        data: ((data) {
-                          _textEditingController.text = data.first['name'];
-                          return Column(
-                            children: [
-                              TextField(
-                                onChanged: (value) {},
-                                controller: _textEditingController,
-                              ),
-                              //Big problems here
-                              Text('Select category'),
-                              FutureBuilder(
-                                  future: listofCategoriestherightway,
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.done) {
-                                      if (snapshot.hasData) {
-                                        return DropdownButton(
-                                          value: data.first['category'],
-                                          items: categoryList
-                                              .map((item) => DropdownMenuItem(
-                                                  value: item,
-                                                  child: Text(
-                                                    item,
-                                                    style:
-                                                        TextStyle(fontSize: 18),
-                                                  )))
-                                              .toList(),
-                                          onChanged: (item) => setState(() {
-                                            selectedCategoryExport =
-                                                item.toString();
-                                            selectedCategory =
-                                                selectedCategoryExport;
-                                            print(selectedCategory);
-                                          }),
-                                        );
-                                      } else {
-                                        return const Text('Nothing here');
-                                      }
-                                    } else {
-                                      return const CircularProgressIndicator();
-                                    }
-                                  }),
-                              Text('Select importance'),
-                              DropdownButton(
-                                value: data.first['importance'],
-                                items: importance
-                                    .map((item) => DropdownMenuItem<int>(
-                                        value: item,
-                                        child: Text(
-                                          item.toString(),
-                                          style: TextStyle(fontSize: 18),
-                                        )))
-                                    .toList(),
-                                onChanged: (item) => setState(() {
-                                  selectedImportance = item as int;
+        centerTitle: true,
+        actions: [
+          IconButton(
+              onPressed: () {
+                noteDelete(index: indexfornote);
+                Navigator.push(context,
+                    MaterialPageRoute(builder: ((context) => const MyApp())))
+                  ..then(((value) {
+                    setState(() {});
+                  }));
+                Navigator.of(context).pop();
+              },
+              icon: const Icon(Icons.delete))
+        ],
+      ),
+      body: SingleChildScrollView(child: Center(
+        child: Consumer(builder: ((context, ref, child) {
+          AsyncValue<List> thisNote = ref.watch(noteThatNeedsToBeEdited);
+          return thisNote.when(
+              data: ((data) {
+                _textEditingController.text = data.first['name'];
 
-                                  print(selectedImportance);
-                                }),
-                              ),
-                              Text('Select date and time'),
-                              DateTimePicker(
-                                type: DateTimePickerType.dateTimeSeparate,
-                                dateMask: 'd MMM, yyyy',
-                                initialValue: data.first['dates'],
-                                firstDate: DateTime(2000),
-                                lastDate: DateTime(2100),
-                                icon: Icon(Icons.event),
-                                dateLabelText: 'Date',
-                                timeLabelText: "Hour",
-                                selectableDayPredicate: (date) {
-                                  // Disable weekend days to select from the calendar
-                                  if (date.weekday == 6 || date.weekday == 7) {
-                                    return false;
-                                  }
+                int initialImportance = data.first['importance'];
+                return Column(
+                  children: [
+                    TextField(
+                      onChanged: (value) {},
+                      controller: _textEditingController,
+                    ),
+                    //Big problems here
+                    Text('Select category'),
+                    DropdownButton(
+                      value: selectedCategoryExport,
+                      items: categoryList
+                          .map((item) => DropdownMenuItem(
+                              value: item,
+                              child: Text(
+                                item,
+                                style: TextStyle(fontSize: 18),
+                              )))
+                          .toList(),
+                      onChanged: (item) => setState(() {
+                        selectedCategoryExport = item.toString();
+                        selectedCategory = selectedCategoryExport;
+                        print(selectedCategory);
+                      }),
+                    ),
 
-                                  return true;
-                                },
-                                onChanged: (val) {
-                                  selectedDate = val;
-                                },
-                                validator: (val) {
-                                  print(val);
-                                  return null;
-                                },
-                                onSaved: (val) => print(val),
-                              ),
-                            ],
-                          );
-                        }),
-                        error: (e, stackTrace) => Text('Error happened'),
-                        loading: () => Text('Loading...'));
-                  })),
+                    Text('Select importance'),
+                    DropdownButton(
+                      value: selectedImportance,
+                      items: importance
+                          .map((item) => DropdownMenuItem<int>(
+                              value: item,
+                              child: Text(
+                                item.toString(),
+                                style: TextStyle(fontSize: 18),
+                              )))
+                          .toList(),
+                      onChanged: (item) => setState(() {
+                        selectedImportance = item as int;
+
+                        print(selectedImportance);
+                      }),
+                    ),
+                    Text('Select date and time'),
+                    DateTimePicker(
+                      type: DateTimePickerType.dateTimeSeparate,
+                      dateMask: 'd MMM, yyyy',
+                      initialValue: data.first['dates'],
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(2100),
+                      icon: Icon(Icons.event),
+                      dateLabelText: 'Date',
+                      timeLabelText: "Hour",
+                      selectableDayPredicate: (date) {
+                        // Disable weekend days to select from the calendar
+                        if (date.weekday == 6 || date.weekday == 7) {
+                          return false;
+                        }
+
+                        return true;
+                      },
+                      onChanged: (val) {
+                        selectedDate = val;
+                      },
+                      validator: (val) {
+                        print(val);
+                        return null;
+                      },
+                      onSaved: (val) => print(val),
+                    ),
+                  ],
                 );
               }),
-        ));
+              error: (e, stackTrace) => Text('Error happened'),
+              loading: () => Text('Loading...'));
+        })),
+      )),
+    );
   }
 }
