@@ -65,6 +65,7 @@ class _NoteEditorState extends State<NoteEditor> {
           title: Consumer(
             builder: ((context, ref, child) {
               AsyncValue<List> whatever = ref.watch(noteThatNeedsToBeEdited);
+
               return whatever.when(
                   data: (name) {
                     return Text('Editing: ' + name.first['name'].toString());
@@ -98,14 +99,12 @@ class _NoteEditorState extends State<NoteEditor> {
                         ref.watch(noteThatNeedsToBeEdited);
                     return thisNote.when(
                         data: ((data) {
+                          _textEditingController.text = data.first['name'];
                           return Column(
                             children: [
                               TextField(
                                 onChanged: (value) {},
                                 controller: _textEditingController,
-                                decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    hintText: data.first['name']),
                               ),
                               //Big problems here
                               Text('Select category'),
