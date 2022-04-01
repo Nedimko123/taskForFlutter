@@ -61,7 +61,7 @@ class _NoteEditorState extends State<NoteEditor> {
             });
             Navigator.of(context).pop();
           },
-          child: Text('Save')),
+          child: const Text('Save')),
       appBar: AppBar(
         title: Consumer(
           builder: ((context, ref, child) {
@@ -106,7 +106,7 @@ class _NoteEditorState extends State<NoteEditor> {
                       controller: _textEditingController,
                     ),
                     //Big problems here
-                    Text('Select category'),
+                    const Text('Select category'),
                     DropdownButton(
                       value: changeInitSelectedCategory
                           ? initialCategory
@@ -116,7 +116,7 @@ class _NoteEditorState extends State<NoteEditor> {
                               value: item,
                               child: Text(
                                 item,
-                                style: TextStyle(fontSize: 18),
+                                style: const TextStyle(fontSize: 18),
                               )))
                           .toList(),
                       onChanged: (item) => setState(() {
@@ -127,7 +127,7 @@ class _NoteEditorState extends State<NoteEditor> {
                       }),
                     ),
 
-                    Text('Select importance'),
+                    const Text('Select importance'),
                     DropdownButton(
                       value: changeInitImportance
                           ? initialImportance
@@ -137,7 +137,7 @@ class _NoteEditorState extends State<NoteEditor> {
                               value: item,
                               child: Text(
                                 item.toString(),
-                                style: TextStyle(fontSize: 18),
+                                style: const TextStyle(fontSize: 18),
                               )))
                           .toList(),
                       onChanged: (item) {
@@ -148,14 +148,14 @@ class _NoteEditorState extends State<NoteEditor> {
                         });
                       },
                     ),
-                    Text('Select date and time'),
+                    const Text('Select date and time'),
                     DateTimePicker(
                       type: DateTimePickerType.dateTimeSeparate,
                       dateMask: 'd MMM, yyyy',
                       initialValue: data.first['dates'],
                       firstDate: DateTime(2000),
                       lastDate: DateTime(2100),
-                      icon: Icon(Icons.event),
+                      icon: const Icon(Icons.event),
                       dateLabelText: 'Date',
                       timeLabelText: "Hour",
                       selectableDayPredicate: (date) {
@@ -178,8 +178,8 @@ class _NoteEditorState extends State<NoteEditor> {
                   ],
                 );
               }),
-              error: (e, stackTrace) => Text('Error happened'),
-              loading: () => Text('Loading...'));
+              error: (e, stackTrace) => const Text('Error happened'),
+              loading: () => const Text('Loading...'));
         })),
       )),
     );
