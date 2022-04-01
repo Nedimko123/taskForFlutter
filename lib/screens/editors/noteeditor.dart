@@ -103,9 +103,9 @@ class _NoteEditorState extends State<NoteEditor> {
                               TextField(
                                 onChanged: (value) {},
                                 controller: _textEditingController,
-                                decoration: const InputDecoration(
+                                decoration: InputDecoration(
                                     border: InputBorder.none,
-                                    hintText: 'Input new name'),
+                                    hintText: data.first['name']),
                               ),
                               //Big problems here
                               Text('Select category'),
