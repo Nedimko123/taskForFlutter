@@ -36,6 +36,8 @@ class _NoteEditorState extends State<NoteEditor> {
   List<int> importance = [1, 2, 3];
   bool changeInitImportance = true;
   int selectedImportance = 1;
+  late int initialImportance;
+  late String initialCategory;
   final TextEditingController _textEditingController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -54,8 +56,12 @@ class _NoteEditorState extends State<NoteEditor> {
               noteEditor(
                   index: indexfornote,
                   name: _textEditingController.text.toString(),
-                  importance: selectedImportance,
-                  category: selectedCategoryExport,
+                  importance: changeInitImportance
+                      ? initialImportance
+                      : selectedImportance,
+                  category: changeInitSelectedCategory
+                      ? initialCategory
+                      : selectedCategoryExport,
                   date: selectedDate,
                   color: categoryColor);
             });
@@ -93,11 +99,13 @@ class _NoteEditorState extends State<NoteEditor> {
       body: SingleChildScrollView(child: Center(
         child: Consumer(builder: ((context, ref, child) {
           AsyncValue<List> thisNote = ref.watch(noteThatNeedsToBeEdited);
+
           return thisNote.when(
               data: ((data) {
                 _textEditingController.text = data.first['name'];
-                String initialCategory = data.first['category'];
-                int? initialImportance = data.first['importance'];
+                initialCategory = data.first['category'];
+                initialImportance = data.first['importance'];
+
                 selectedDate = data.first['dates'];
                 return Column(
                   children: [
