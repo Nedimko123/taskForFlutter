@@ -65,6 +65,11 @@ class _NoteEditorState extends State<NoteEditor> {
                   date: selectedDate,
                   color: categoryColor);
             });
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text('Saved'),
+              behavior: SnackBarBehavior.floating,
+              duration: Duration(seconds: 1),
+            ));
             Navigator.of(context).pop();
           },
           child: const Text('Save')),

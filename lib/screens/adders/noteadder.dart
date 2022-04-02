@@ -149,6 +149,11 @@ class _NoteAdderState extends State<NoteAdder> {
                           date: selectedDate,
                           color: categoryColor);
                     });
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text('Added new task...'),
+                      behavior: SnackBarBehavior.floating,
+                      duration: Duration(seconds: 1),
+                    ));
                     Navigator.of(context).pop();
                   },
                   child: const Text('Add new task')),

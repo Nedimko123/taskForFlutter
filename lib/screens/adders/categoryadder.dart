@@ -60,6 +60,11 @@ class _CategoryAdderState extends State<CategoryAdder> {
                           name: _textEditingController.text,
                           color: selectedColor);
                     });
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text('Added new category'),
+                      behavior: SnackBarBehavior.floating,
+                      duration: Duration(seconds: 1),
+                    ));
                     Navigator.of(context).pop();
                   },
                   child: const Text('Add!'))
